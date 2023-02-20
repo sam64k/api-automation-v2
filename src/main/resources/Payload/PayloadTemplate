@@ -1,0 +1,7 @@
+payload VALUE ${header1:-test1}
+payload VALUE ${header2:-test2}
+payload VALUE ${header3}
+payload VALUE ${header4}
+payload   ${value1:-default}
+payload ${value2:-default}
+Bearer ${token}

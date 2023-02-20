@@ -1,40 +1,54 @@
 package com.coop.api.steps;
 
-import io.cucumber.datatable.internal.difflib.StringUtills;
+import com.coop.api.data.RequestDataMap;
+import com.coop.api.data.GlobalDataMap;
+import com.coop.api.utility.FileUtility;
+import com.coop.api.utility.StringUtility;
 import io.cucumber.java.en.Given;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.StringSubstitutor;
 
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
-public class RequestSetup {
-    RequestData requestdata;
+public class RequestInitSteps {
+    RequestDataMap RequestDataMap;
 
-    public RequestSetup(RequestData requestdata){
-        this.requestdata = requestdata;
+    public RequestInitSteps(RequestDataMap RequestDataMap){
+        this.RequestDataMap = RequestDataMap;
     }
     @Given("endpoint is {string}")
     public void endpoint_is(String URL) {
-        System.out.println("endpoint is {string}");
-        requestdata.setUrl(URL);
+        RequestDataMap.setUrl(URL);
     }
     @Given("set headers")
     public void set_headers(io.cucumber.datatable.DataTable headerParams) {
-        System.out.println("SET HEADER");
-        requestdata.initHeaderParams(headerParams.asMap());
+        RequestDataMap.initHeaderParams(headerParams.asMap());
     }
     @Given("set header {string} value {string}")
-    public void set_header_value(String attribute, String key) {
+    public void set_header_value(String attribute, String keyOrValue) {
         String attributeValue;
-        if(key.startsWith("${")){
-            key = key.substring(2,key.length()-1);
+        if(keyOrValue.startsWith("${")){
+            keyOrValue = StringUtility.extractKey(keyOrValue);
+            attributeValue = GlobalDataMap.getInstance().getGlobalRefData(keyOrValue);
         }
-        attributeValue = ScenarioContext.getInstance().getGlobalRefData(key);
-        requestdata.addHeaderParam(attribute,attributeValue);
-        System.out.println("key"+key);
-        System.out.println("value"+attributeValue);
+        else{
+            attributeValue = keyOrValue;
+        }
+        RequestDataMap.addHeaderParam(attribute,attributeValue);
+        System.out.println("value : "+attributeValue);
     }
     @Given("set payload")
     public void set_payload(io.cucumber.datatable.DataTable payloadParams) {
-        System.out.println("SET PAYLOAD");
-        requestdata.initPayloadParams(payloadParams.asMap());
+        RequestDataMap.initPayloadParams(payloadParams.asMap());
+    }
+    @Given("read payload file {string}")
+    public void read_payload_file(String filename) throws IOException {
+        // Write code here that turns the phrase above into concrete actions
+        RequestDataMap.setPayload(FileUtility.resolvedPayload(FileUtility.readFile(filename),RequestDataMap.getPayloadParam()));
+        System.out.println("Payload 1:"+RequestDataMap.getPayload());
+
     }
 }

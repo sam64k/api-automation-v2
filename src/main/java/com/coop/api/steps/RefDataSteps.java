@@ -1,12 +1,13 @@
 package com.coop.api.steps;
 
+import com.coop.api.data.GlobalDataMap;
 import io.cucumber.java.en.Then;
 
-public class RefData {
+public class RefDataSteps {
     @Then("store {string} from response as {string}")
     public void store_from_response_as(String attribute, String key) {
         //value from response = get value from response
         String attributeValue = "TOKENvaluefromresponse";
-        ScenarioContext.getInstance().addToGlobalRefData(key,attributeValue);
+        GlobalDataMap.getInstance().addToGlobalRefData(key,attributeValue);
     }
 }

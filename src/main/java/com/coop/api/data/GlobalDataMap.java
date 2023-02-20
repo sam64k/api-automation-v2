@@ -1,26 +1,27 @@
-package com.coop.api.steps;
-import lombok.Getter;
-import lombok.Setter;
+package com.coop.api.data;
+
+import com.coop.api.utility.StringUtility;
 
 import java.util.HashMap;
 import java.util.Map;
-public class ScenarioContext {
-    private static ScenarioContext Scenariocontext = null;
-    private Map<String,String> globalRefData;
+public class GlobalDataMap {
+    private static GlobalDataMap GlobalDataMap = null;
+    private Map<String,String> refData;
     private Map<String,String> scenarioRefData;
-    private ScenarioContext(){
-        globalRefData = new HashMap<>();
+    private GlobalDataMap(){
+        refData = new HashMap<>();
     }
-    public static ScenarioContext getInstance(){
-        if(Scenariocontext == null){
-            Scenariocontext = new ScenarioContext();
+    public static GlobalDataMap getInstance(){
+        if(GlobalDataMap == null){
+            GlobalDataMap = new GlobalDataMap();
         }
-        return Scenariocontext;
+        return GlobalDataMap;
     }
     public void addToGlobalRefData(String attribute, String Value){
-        globalRefData.put(attribute, Value);
+        refData.put(attribute, Value);
     }
     public String getGlobalRefData(String key){
-        return globalRefData.get(key);
+        key = StringUtility.extractKey(key);
+        return refData.get(key);
     }
 }
